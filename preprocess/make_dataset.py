@@ -2,7 +2,7 @@ import os
 import numpy as np
 from multiprocessing import Pool
 import pickle
-
+import argparse
 
 def process_audios(feat_fn):
     feat_fp = os.path.join(feat_dir, f'{feat_fn}.npy')
@@ -19,8 +19,12 @@ def process_audios(feat_fn):
 
 
 if __name__ == "__main__":
-    feat_type = ''
-    exp_dir = ''  # base_out_dir from step2
+    parser = argparse.ArgumentParser(description="compute inception score")
+    parser.add_argument("--dir", type=str, help="path to the input dir")
+    args = parser.parse_args()
+
+    feat_type = 'mel_64_200'
+    exp_dir = args.dir  # base_out_dir from step2
 
     out_fp = os.path.join(exp_dir, 'dataset.pkl')
 

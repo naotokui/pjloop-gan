@@ -96,23 +96,22 @@ def process_audios(path):
         print('Done before')
         return id, 0
 
-    try:
-        m = convert_file(path)
-        np.save(out_fp, m, allow_pickle=False)
-    except Exception:
-        return id, 0
+    # try:
+    m = convert_file(path)
+    np.save(out_fp, m, allow_pickle=False)
+    # except Exception:
+    #     return id, 0
     return id, m.shape[-1]
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="compute inception score")
-
-    parser.add_argument("--epoch", type=str, help="path to the model")
+    parser.add_argument("--dir", type=str, help="path to the input dir")
 
     args = parser.parse_args()
-    base_out_dir = f''
+    base_out_dir = args.dir
     os.makedirs(base_out_dir, exist_ok=True)
-    clip_dir = f''  #out_dir from step1
+    clip_dir = base_out_dir  #out_dir from step1
 
     feat_type = 'mel_64_200'
     extension = '.wav'
@@ -124,27 +123,28 @@ if __name__ == "__main__":
     sampling_rate = 16000
     n_mel_channels = 64 
     
-    
-
     # ### Process ###
     extract_func = Audio2Mel(n_fft, hop_length, win_length, sampling_rate, n_mel_channels)
     sr = sampling_rate
 
-    audio_fns = [fn for fn in os.listdir(clip_dir) if fn.endswith(extension)]
+    audio_fns = [fn for fn in os.listdir(base_out_dir) if fn.endswith(extension)]
 
     audio_fns = sorted(list(audio_fns))
 
     audio_files = [os.path.join(clip_dir, fn) for fn in audio_fns]  
     
-    pool = Pool(processes=20)
     dataset = []
 
-    
-    for i, (id, length) in enumerate(pool.imap_unordered(process_audios, audio_files), 1):
-        print(id)
-        if length == 0:
-            continue
-        dataset += [(id, length)]
+    for filename in audio_files:
+        print(filename)
+        process_audios(filename)
+
+    # pool = Pool(processes=20)    
+    # for i, (id, length) in enumerate(pool.imap_unordered(process_audios, audio_files), 1):
+    #     print(id)
+    #     if length == 0:
+    #         continue
+    #     dataset += [(id, length)]
     
     
     

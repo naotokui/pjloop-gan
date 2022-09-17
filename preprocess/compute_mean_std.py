@@ -2,20 +2,23 @@ import os
 import pickle
 import numpy as np
 from sklearn.preprocessing import StandardScaler
-
+import argparse
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="compute inception score")
+    parser.add_argument("--dir", type=str, help="path to the input dir")
+    args = parser.parse_args()
 
     feat_type = 'mel'
-    exp_dir = ''
+    exp_dir = args.dir
 
-    out_dir = exp_dir
+    out_dir = os.path.join(exp_dir, "mel_64_200")
 
     # ### Process ###
 
     dataset_fp = os.path.join(exp_dir, f'dataset.pkl')
     #feat_dir = os.path.join(exp_dir, feat_type)
-    feat_dir = exp_dir
+    feat_dir = out_dir
     out_fp_mean = os.path.join(out_dir, f'mean.{feat_type}.npy')
     out_fp_std = os.path.join(out_dir, f'std.{feat_type}.npy')
 
@@ -46,3 +49,4 @@ if __name__ == "__main__":
     std = scaler.scale_
     np.save(out_fp_mean, mean)
     np.save(out_fp_std, std)
+    print(mean, std)

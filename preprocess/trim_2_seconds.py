@@ -10,8 +10,15 @@ import soundfile as sf
 import json 
 from collections import defaultdict
 from multiprocessing import Pool
-loop_dir= '/path/to/data'
-out_dir= '/path/to/output'
+import argparse
+
+parser = argparse.ArgumentParser(description="")
+parser.add_argument("--dir", type=str, help="path to the input dir")
+args = parser.parse_args()
+
+loop_dir= args.dir
+out_dir=  os.path.join(loop_dir, "loops")
+
 os.makedirs(out_dir, exist_ok=True)
 valid_loop = defaultdict(int)
 
