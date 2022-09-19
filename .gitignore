@@ -1,2 +1,6 @@
 train_data
-
+tmp
+*.pyc
+logs.txt
+__pycache__
+wandb
